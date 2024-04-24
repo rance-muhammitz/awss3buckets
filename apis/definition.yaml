@@ -1,29 +1,32 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xcfgresources.cfg.example.org
+  name: x-awss3buckets.crossplane.hansemerkur.de
 spec:
-  group: cfg.example.org
+  group: crossplane.hansemerkur.de
   names:
-    kind: XCfgResource
-    plural: xcfgresources
+    kind: x-awss3bucket
+    plural: x-awss3buckets
   claimNames:
-    kind: CfgResource
-    plural: cfgresources
-  connectionSecretKeys:
-    - test
+    kind: awss3bucket
+    plural: awss3buckets
   versions:
-    - name: v1alpha1
-      served: true
-      referenceable: true
-      schema:
-        openAPIV3Schema:
-          type: object
-          properties:
-            spec:
-              type: object
-              properties:
-                data:
-                  type: string
-              required:
-                - data
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                properties:
+                  region:
+                    type: string
+                  bucketName:
+                    type: string
+                required:
+                  - region

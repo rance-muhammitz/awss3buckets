@@ -1,32 +1,22 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: cfg-composition
+  name: awss3buckets.crossplane.hansemerkur.de
 spec:
+  writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
-    apiVersion: cfg.example.org/v1alpha1
-    kind: XCfgResource
-  mode: Pipeline
-  pipeline:
-    - step: patch-and-transform
-      functionRef:
-        name: crossplane-contrib-function-patch-and-transform
-      input:
-        apiVersion: pt.fn.crossplane.io/v1beta1
-        kind: Resources
-        resources:
-          - name: resource-0
-            base:
-              apiVersion: kubernetes.crossplane.io/v1alpha2
-              kind: Object
-              spec:
-                forProvider:
-                  manifest:
-                    apiVersion: v1
-                    kind: ConfigMap
-                    metadata:
-                      namespace: default
-            patches:
-              - type: FromCompositeFieldPath
-                fromFieldPath: spec.data
-                toFieldPath: spec.forProvider.manifest.data.sample-key
+    apiVersion: crossplane.hansemerkur.de/v1alpha1
+    kind: x-awss3bucket
+  resources:
+    - name: awss3bucket_1
+      base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: Bucket
+        spec:
+          forProvider:
+            region: eu-central-1
+      patches:
+       - fromFieldPath: "spec.parameters.bucketName"
+         toFieldPath: "metadata.name"
+       - fromFieldPath: "spec.parameters.region"
+         toFieldPath: "spec.forProvider.region"
